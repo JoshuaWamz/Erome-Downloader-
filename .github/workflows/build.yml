@@ -1,33 +1,26 @@
 name: Build APK
-(blank line)
 on:
-(2 spaces)push:
-(4 spaces)tags:
-(6 spaces)- 'v*'
-(blank line)
+  push:
+    tags:
+      - 'v*'
 jobs:
-(2 spaces)build:
-(4 spaces)runs-on: ubuntu-latest
-(blank line)
-(4 spaces)steps:
-(6 spaces)- uses: actions/checkout@v4
-(blank line)
-(6 spaces)- uses: actions/setup-java@v4
-(8 spaces)with:
-(10 spaces)distribution: 'zulu'
-(10 spaces)java-version: '17'
-(blank line)
-(6 spaces)- uses: subosito/flutter-action@v2
-(8 spaces)with:
-(10 spaces)flutter-version: '3.24.0'
-(blank line)
-(6 spaces)- run: flutter create . --platforms=android
-(6 spaces)- run: flutter pub get
-(6 spaces)- run: flutter build apk --split-per-abi
-(blank line)
-(6 spaces)- name: Upload APKs
-(8 spaces)uses: softprops/action-gh-release@v2
-(8 spaces)with:
-(10 spaces)files: build/app/outputs/flutter-apk/*.apk
-(8 spaces)env:
-(10 spaces)GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+      - run: flutter create . --platforms=android
+      - run: flutter pub get
+      - run: flutter build apk --split-per-abi
+      - name: Upload APKs
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
