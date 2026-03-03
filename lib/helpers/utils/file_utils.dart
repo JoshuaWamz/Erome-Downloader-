@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:gal/gal.dart';
 import 'erome_utils.dart';
 
 class FileUtils {
@@ -17,10 +17,20 @@ class FileUtils {
     final file = File(filePath);
     if (!await file.exists()) return;
 
-    if (filePath.endsWith('.mp4') || filePath.endsWith('.mov')) {
-      await GallerySaver.saveVideo(filePath, albumName: 'Erome');
-    } else {
-      await GallerySaver.saveImage(filePath, albumName: 'Erome');
+    // Check and request storage permission for Android (handled by gal)
+    if (!await Gal.hasAccess()) {
+      final granted = await Gal.requestAccess();
+      if (!granted) throw Exception('Storage permission denied');
+    }
+
+    try {
+      if (filePath.endsWith('.mp4') || filePath.endsWith('.mov')) {
+        await Gal.putVideo(filePath, album: 'Erome');
+      } else {
+        await Gal.putImage(filePath, album: 'Erome');
+      }
+    } on GalException catch (e) {
+      throw Exception('Failed to save to gallery: ${e.type.message}');
     }
   }
 
