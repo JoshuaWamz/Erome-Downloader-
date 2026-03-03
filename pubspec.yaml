@@ -12,7 +12,7 @@ dependencies:
 
   # Networking & parsing
   dio: ^5.7.0
-  http: ^1.6.0          # <-- updated from 0.13.6
+  http: ^1.6.0
   html: ^0.15.5
 
   # Browser
@@ -37,7 +37,5 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
-flutter:
-  uses-material-design: true
 flutter:
   uses-material-design: true
