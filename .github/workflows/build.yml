@@ -37,30 +37,30 @@ jobs:
       - name: Update Gradle wrapper to 8.3
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew wrapper --gradle-version=8.3 --distribution-type=bin
 
       # ========== UPDATE ANDROID GRADLE PLUGIN TO 8.2.2 ==========
-      - name: Update Android Gradle Plugin to 8.2.2 in root build.gradle
+      - name: Force Android Gradle Plugin to 8.2.2
         run: |
-          # Replace classpath line with new version, handling both single and double quotes
-          sed -i "s/classpath ['\"]com.android.tools.build:gradle:[0-9]\+\.[0-9]\+\.[0-9]\+['\"]/classpath 'com.android.tools.build:gradle:8.2.2'/" android/build.gradle
-          echo "Updated AGP in android/build.gradle:"
-          grep "com.android.tools.build:gradle" android/build.gradle || true
+          # Show original line
+          echo "Original AGP line:"
+          grep "com.android.tools.build:gradle" android/build.gradle || echo "Not found"
 
-      - name: Also update AGP in app/build.gradle if present (legacy)
-        run: |
-          if [ -f android/app/build.gradle ]; then
-            sed -i "s/classpath ['\"]com.android.tools.build:gradle:[0-9]\+\.[0-9]\+\.[0-9]\+['\"]/classpath 'com.android.tools.build:gradle:8.2.2'/" android/app/build.gradle || true
-          fi
+          # Replace with exact version using a robust pattern
+          sed -i 's/com\.android\.tools\.build\:gradle\:[0-9]\+\.[0-9]\+\.[0-9]\+/com.android.tools.build:gradle:8.2.2/' android/build.gradle
 
-      # ========== FIX KOTLIN VERSION (use latest 2.3.10) ==========
-      - name: Update Kotlin version in build.gradle (legacy)
-        run: |
-          sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "2.3.10"/' android/build.gradle || true
+          # Verify change
+          echo "Updated AGP line:"
+          grep "com.android.tools.build:gradle" android/build.gradle || echo "Still not found"
 
-      - name: Update Kotlin version in settings.gradle to 2.3.10
+      # ========== FIX KOTLIN VERSION ==========
+      - name: Update Kotlin to 2.3.10
         run: |
+          # Update settings.gradle (new format)
           sed -i 's/org.jetbrains.kotlin.android" version "[^"]*"/org.jetbrains.kotlin.android" version "2.3.10"/' android/settings.gradle
+          # Update build.gradle (legacy)
+          sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "2.3.10"/' android/build.gradle || true
 
       # ========== CUSTOM ICON & APP NAME ==========
       - name: Copy custom icon (if exists)
