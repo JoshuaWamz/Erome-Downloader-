@@ -21,7 +21,7 @@ dependencies:
   # Storage & permissions
   path_provider: ^2.1.5
   permission_handler: ^11.3.1
-  gal: ^2.2.0   # <-- changed from gallery_saver
+  gallery_saver_plus: ^3.2.9   # <-- updated to latest
 
   # State management
   provider: ^6.1.2
