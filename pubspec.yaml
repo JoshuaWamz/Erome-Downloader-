@@ -12,7 +12,7 @@ dependencies:
 
   # Networking & parsing
   dio: ^5.7.0
-  http: ^1.2.2
+  http: ^0.13.6
   html: ^0.15.5
 
   # Browser
