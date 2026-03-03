@@ -12,7 +12,7 @@ dependencies:
 
   # Networking & parsing
   dio: ^5.7.0
-  http: ^0.13.6
+  http: ^1.6.0          # <-- updated from 0.13.6
   html: ^0.15.5
 
   # Browser
@@ -21,7 +21,7 @@ dependencies:
   # Storage & permissions
   path_provider: ^2.1.5
   permission_handler: ^11.3.1
-  gallery_saver_plus: ^3.2.9   # <-- updated to latest
+  gallery_saver_plus: ^3.2.9
 
   # State management
   provider: ^6.1.2
@@ -37,5 +37,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
+flutter:
+  uses-material-design: true
 flutter:
   uses-material-design: true
