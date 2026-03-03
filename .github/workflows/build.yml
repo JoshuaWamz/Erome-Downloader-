@@ -37,36 +37,47 @@ jobs:
       - name: Update Gradle wrapper to 8.3
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew wrapper --gradle-version=8.3 --distribution-type=bin
 
-      # ========== UPDATE ANDROID GRADLE PLUGIN TO 8.2.2 ==========
-      - name: Update Android Gradle Plugin to 8.2.2 in root build.gradle
+      # ========== UPDATE ANDROID GRADLE PLUGIN (AGP) IN SETTINGS.GRADLE ==========
+      - name: Update AGP in settings.gradle (modern format)
         run: |
-          # Replace classpath line with new version, handling both single and double quotes
-          sed -i "s/classpath ['\"]com.android.tools.build:gradle:[0-9]\+\.[0-9]\+\.[0-9]\+['\"]/classpath 'com.android.tools.build:gradle:8.2.2'/" android/build.gradle
-          echo "Updated AGP in android/build.gradle:"
-          grep "com.android.tools.build:gradle" android/build.gradle || true
+          echo "Original settings.gradle:"
+          grep "com.android.application" android/settings.gradle || echo "Not found"
+          # Update application plugin version
+          sed -i 's/id "com\.android\.application" version "[^"]*"/id "com.android.application" version "8.2.2"/' android/settings.gradle
+          # Update library plugin version (if present)
+          sed -i 's/id "com\.android\.library" version "[^"]*"/id "com.android.library" version "8.2.2"/' android/settings.gradle
+          echo "Updated settings.gradle:"
+          grep "com.android.application" android/settings.gradle || echo "Still not found"
 
-      - name: Also update AGP in app/build.gradle if present (legacy)
+      # ========== UPDATE AGP IN BUILD.GRADLE (LEGACY FALLBACK) ==========
+      - name: Update AGP in build.gradle (legacy)
         run: |
-          if [ -f android/app/build.gradle ]; then
-            sed -i "s/classpath ['\"]com.android.tools.build:gradle:[0-9]\+\.[0-9]\+\.[0-9]\+['\"]/classpath 'com.android.tools.build:gradle:8.2.2'/" android/app/build.gradle || true
+          if grep -q "classpath ['\"]com.android.tools.build:gradle" android/build.gradle; then
+            sed -i "s/classpath ['\"]com.android.tools.build:gradle:[0-9]\+\.[0-9]\+\.[0-9]\+['\"]/classpath 'com.android.tools.build:gradle:8.2.2'/" android/build.gradle
+            echo "Updated AGP in build.gradle"
+          else
+            echo "No classpath line found in build.gradle (already using plugin block?)"
           fi
 
-      # ========== VERIFY AGP VERSION ==========
-      - name: Verify AGP version in root build.gradle
-        run: |
-          echo "===== Root build.gradle after AGP update ====="
-          cat android/build.gradle
-
       # ========== FIX KOTLIN VERSION (use latest 2.3.10) ==========
-      - name: Update Kotlin version in build.gradle (legacy)
+      - name: Update Kotlin in settings.gradle (plugin block)
+        run: |
+          sed -i 's/id "org\.jetbrains\.kotlin\.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "2.3.10"/' android/settings.gradle
+
+      - name: Update Kotlin in build.gradle (legacy)
         run: |
           sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "2.3.10"/' android/build.gradle || true
 
-      - name: Update Kotlin version in settings.gradle to 2.3.10
+      # ========== VERIFY ALL CHANGES ==========
+      - name: Verify settings.gradle after updates
         run: |
-          sed -i 's/org.jetbrains.kotlin.android" version "[^"]*"/org.jetbrains.kotlin.android" version "2.3.10"/' android/settings.gradle
+          echo "===== settings.gradle ====="
+          cat android/settings.gradle
+          echo "===== build.gradle ====="
+          cat android/build.gradle
 
       # ========== CUSTOM ICON & APP NAME ==========
       - name: Copy custom icon (if exists)
