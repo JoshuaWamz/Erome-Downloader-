@@ -24,7 +24,7 @@ jobs:
           flutter-version: '3.24.0'
           channel: 'stable'
 
-      - name: Create platform folders (android/ios)
+      - name: Create platform folders
         run: flutter create . --platforms=android
 
       # ========== CUSTOM ICON & APP NAME ==========
@@ -44,14 +44,12 @@ jobs:
       - name: Change app display name
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
-          # Replace the android:label with "Erome Downloader"
           sed -i 's/android:label="[^"]*"/android:label="Erome Downloader"/' "$MANIFEST"
 
       # ========== FOREGROUND SERVICE PERMISSIONS ==========
       - name: Add foreground service permissions
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
-          # Insert permissions right after <manifest>
           sed -i '/<manifest/a \
           <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />\
           <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />' "$MANIFEST"
