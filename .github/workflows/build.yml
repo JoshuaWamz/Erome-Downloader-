@@ -33,12 +33,15 @@ jobs:
           sed -i 's/minSdkVersion [0-9]\+/minSdkVersion 35/' android/app/build.gradle
           sed -i 's/targetSdkVersion [0-9]\+/targetSdkVersion 35/' android/app/build.gradle
 
-      # ========== UPDATE GRADLE WRAPPER TO 8.3 ==========
-      - name: Update Gradle wrapper to 8.3
+      # ========== FORCE GRADLE WRAPPER TO 8.3 ==========
+      - name: Force Gradle wrapper to 8.3
         run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew wrapper --gradle-version=8.3 --distribution-type=bin
+          # Directly set the distribution URL in gradle-wrapper.properties
+          sed -i 's|distributionUrl=.*|distributionUrl=https\://services.gradle.org/distributions/gradle-8.3-all.zip|' android/gradle/wrapper/gradle-wrapper.properties
+          echo "Updated gradle-wrapper.properties:"
+          cat android/gradle/wrapper/gradle-wrapper.properties
+          # Make gradlew executable
+          chmod +x android/gradlew
 
       # ========== UPDATE ANDROID GRADLE PLUGIN (AGP) IN SETTINGS.GRADLE ==========
       - name: Update AGP in settings.gradle (modern format)
