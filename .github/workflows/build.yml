@@ -33,6 +33,26 @@ jobs:
           sed -i 's/minSdkVersion [0-9]\+/minSdkVersion 35/' android/app/build.gradle
           sed -i 's/targetSdkVersion [0-9]\+/targetSdkVersion 35/' android/app/build.gradle
 
+      # ========== UPDATE GRADLE WRAPPER TO 8.3 ==========
+      - name: Update Gradle wrapper to 8.3
+        run: |
+          cd android
+          ./gradlew wrapper --gradle-version=8.3 --distribution-type=bin
+
+      # ========== UPDATE ANDROID GRADLE PLUGIN TO 8.2.2 ==========
+      - name: Update Android Gradle Plugin to 8.2.2 in root build.gradle
+        run: |
+          # Replace classpath line with new version, handling both single and double quotes
+          sed -i "s/classpath ['\"]com.android.tools.build:gradle:[0-9]\+\.[0-9]\+\.[0-9]\+['\"]/classpath 'com.android.tools.build:gradle:8.2.2'/" android/build.gradle
+          echo "Updated AGP in android/build.gradle:"
+          grep "com.android.tools.build:gradle" android/build.gradle || true
+
+      - name: Also update AGP in app/build.gradle if present (legacy)
+        run: |
+          if [ -f android/app/build.gradle ]; then
+            sed -i "s/classpath ['\"]com.android.tools.build:gradle:[0-9]\+\.[0-9]\+\.[0-9]\+['\"]/classpath 'com.android.tools.build:gradle:8.2.2'/" android/app/build.gradle || true
+          fi
+
       # ========== FIX KOTLIN VERSION (use latest 2.3.10) ==========
       - name: Update Kotlin version in build.gradle (legacy)
         run: |
