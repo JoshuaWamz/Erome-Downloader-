@@ -33,14 +33,14 @@ jobs:
           sed -i 's/minSdkVersion [0-9]\+/minSdkVersion 35/' android/app/build.gradle
           sed -i 's/targetSdkVersion [0-9]\+/targetSdkVersion 35/' android/app/build.gradle
 
-      # ========== FIX KOTLIN VERSION (BOTH build.gradle AND settings.gradle) ==========
+      # ========== FIX KOTLIN VERSION (use latest 2.3.10) ==========
       - name: Update Kotlin version in build.gradle (legacy)
         run: |
-          sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "1.9.24"/' android/build.gradle || true
+          sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "2.3.10"/' android/build.gradle || true
 
-      - name: Update Kotlin version in settings.gradle (new format)
+      - name: Update Kotlin version in settings.gradle to 2.3.10
         run: |
-          sed -i 's/org.jetbrains.kotlin.android" version "[^"]*"/org.jetbrains.kotlin.android" version "1.9.24"/' android/settings.gradle
+          sed -i 's/org.jetbrains.kotlin.android" version "[^"]*"/org.jetbrains.kotlin.android" version "2.3.10"/' android/settings.gradle
 
       # ========== CUSTOM ICON & APP NAME ==========
       - name: Copy custom icon (if exists)
