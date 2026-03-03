@@ -27,6 +27,17 @@ jobs:
       - name: Create platform folders with correct project name
         run: flutter create --project-name=erome_downloader_ . --platforms=android
 
+      # ========== SET MIN SDK TO ANDROID 15 (API 35) ==========
+      - name: Set minSdk and targetSdk to 35
+        run: |
+          sed -i 's/minSdkVersion [0-9]\+/minSdkVersion 35/' android/app/build.gradle
+          sed -i 's/targetSdkVersion [0-9]\+/targetSdkVersion 35/' android/app/build.gradle
+
+      # ========== FIX KOTLIN VERSION ==========
+      - name: Update Kotlin version to 1.9.24 (compatible with AGP 8.3.0)
+        run: |
+          sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "1.9.24"/' android/build.gradle
+
       # ========== CUSTOM ICON & APP NAME ==========
       - name: Copy custom icon (if exists)
         run: |
