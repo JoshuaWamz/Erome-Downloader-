@@ -1,4 +1,4 @@
-name: erome_downloader
+name: erome_downloader_
 description: An in-app browser and downloader for Erome albums.
 publish_to: 'none'
 version: 1.0.0+1
