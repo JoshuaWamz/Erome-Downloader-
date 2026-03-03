@@ -43,23 +43,14 @@ jobs:
       # ========== UPDATE ANDROID GRADLE PLUGIN (AGP) IN SETTINGS.GRADLE ==========
       - name: Update AGP in settings.gradle (modern format)
         run: |
-          echo "Original settings.gradle:"
-          grep "com.android.application" android/settings.gradle || echo "Not found"
-          # Update application plugin version
           sed -i 's/id "com\.android\.application" version "[^"]*"/id "com.android.application" version "8.2.2"/' android/settings.gradle
-          # Update library plugin version (if present)
           sed -i 's/id "com\.android\.library" version "[^"]*"/id "com.android.library" version "8.2.2"/' android/settings.gradle
-          echo "Updated settings.gradle:"
-          grep "com.android.application" android/settings.gradle || echo "Still not found"
 
       # ========== UPDATE AGP IN BUILD.GRADLE (LEGACY FALLBACK) ==========
       - name: Update AGP in build.gradle (legacy)
         run: |
           if grep -q "classpath ['\"]com.android.tools.build:gradle" android/build.gradle; then
             sed -i "s/classpath ['\"]com.android.tools.build:gradle:[0-9]\+\.[0-9]\+\.[0-9]\+['\"]/classpath 'com.android.tools.build:gradle:8.2.2'/" android/build.gradle
-            echo "Updated AGP in build.gradle"
-          else
-            echo "No classpath line found in build.gradle (already using plugin block?)"
           fi
 
       # ========== FIX KOTLIN VERSION (use latest 2.3.10) ==========
@@ -71,13 +62,9 @@ jobs:
         run: |
           sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "2.3.10"/' android/build.gradle || true
 
-      # ========== VERIFY ALL CHANGES ==========
-      - name: Verify settings.gradle after updates
-        run: |
-          echo "===== settings.gradle ====="
-          cat android/settings.gradle
-          echo "===== build.gradle ====="
-          cat android/build.gradle
+      # ========== INSTALL DEPENDENCIES ==========
+      - name: Install dependencies
+        run: flutter pub get
 
       # ========== CUSTOM ICON & APP NAME ==========
       - name: Copy custom icon (if exists)
@@ -126,9 +113,6 @@ jobs:
           EOF
 
       # ========== BUILD ==========
-      - name: Install dependencies
-        run: flutter pub get
-
       - name: Build split APKs
         run: flutter build apk --split-per-abi
 
