@@ -1,25 +1,7 @@
-import 'dart:async';
-import 'package:flutter/foundation.dart';
-
-class LogManager extends ChangeNotifier {
-  final List<String> _logs = [];
-  final StreamController<String> _logStreamController = StreamController.broadcast();
-
-  Stream<String> get logStream => _logStreamController.stream;
-
-  void addLog(String message) {
-    final timestamp = DateTime.now().toIso8601String();
-    final logLine = '[$timestamp] $message';
-    _logs.add(logLine);
-    _logStreamController.add(logLine);
-    if (kDebugMode) print(logLine);
-  }
-
-  List<String> get logs => List.unmodifiable(_logs);
-
-  @override
-  void dispose() {
-    _logStreamController.close();
-    super.dispose();
-  }
+class Config {
+  static const String userAgent =
+      'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.210 Mobile Safari/537.36';
+  static const String baseUrl = 'https://www.erome.com';
+  static const int maxConcurrentDownloads = 3;
+  static const int connectionTimeoutSeconds = 30;
 }
