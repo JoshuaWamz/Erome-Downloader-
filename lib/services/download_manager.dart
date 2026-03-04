@@ -42,8 +42,8 @@ class DownloadManager extends ChangeNotifier {
       ),
       iosNotificationOptions: const IOSNotificationOptions(),
       foregroundTaskOptions: ForegroundTaskOptions(
-        interval: 5000,  // milliseconds - correct for version 8.17.0
-        isOnceEvent: false,
+        // ✅ Correct for flutter_foreground_task 8.17.0
+        eventAction: ForegroundTaskEventAction.repeat(5000),
         autoRunOnBoot: false,
         allowWakeLock: true,
       ),
@@ -176,7 +176,7 @@ class DownloadManager extends ChangeNotifier {
     if (await file.exists()) await file.delete();
   }
 
-  // FIXED: Properly handle Future<bool> with async/await [citation:2][citation:4]
+  // ✅ Async fix for Future<bool>
   void _updateForegroundNotification(DownloadTask task) async {
     final isRunning = await FlutterForegroundTask.isRunningService;
     if (isRunning) {
