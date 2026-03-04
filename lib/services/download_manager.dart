@@ -1,4 +1,4 @@
-import 'dart:io';
+    import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -176,12 +176,16 @@ class DownloadManager extends ChangeNotifier {
     if (await file.exists()) await file.delete();
   }
 
+  // FIXED: Handle Future<bool> correctly
   void _updateForegroundNotification(DownloadTask task) {
-    if (!FlutterForegroundTask.isRunningService) return;
-    FlutterForegroundTask.updateService(
-      notificationTitle: 'Downloading ${task.fileName}',
-      notificationText: '${(task.progress * 100).toStringAsFixed(1)}%',
-    );
+    FlutterForegroundTask.isRunningService.then((isRunning) {
+      if (isRunning) {
+        FlutterForegroundTask.updateService(
+          notificationTitle: 'Downloading ${task.fileName}',
+          notificationText: '${(task.progress * 100).toStringAsFixed(1)}%',
+        );
+      }
+    });
   }
 
   void cancelDownload(String taskId) {
