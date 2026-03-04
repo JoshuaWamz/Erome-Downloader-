@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:path_provider/path_provider.dart';
 import '../helpers/config.dart';
 import '../helpers/managers/log_manager.dart';
 import '../helpers/managers/progress_manager.dart';
@@ -75,7 +76,7 @@ class DownloadManager extends ChangeNotifier {
 
         final task = DownloadTask(
           id: taskId,
-          albumUrl: url, // store the actual media URL
+          albumUrl: url,
           fileName: fileName,
           tempPath: tempPath,
         );
