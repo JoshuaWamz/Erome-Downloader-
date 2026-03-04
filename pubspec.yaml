@@ -27,7 +27,7 @@ dependencies:
   provider: ^6.1.2
 
   # Background tasks
-  flutter_foreground_task: ^8.0.0
+  flutter_foreground_task: ^8.0.0   # <-- this line is present
 
   # Utilities
   shared_preferences: ^2.3.2
